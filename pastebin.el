@@ -3,33 +3,43 @@
 (require 'cl)
 (require 'url-util)
 (require 'simple-httpd)
+(require 'pastebin-db)
 
 (defvar pastebin-data-root (file-name-directory load-file-name))
 
-(defvar pastebin-db (make-hash-table :test 'equal))
+;; DB setup
+
+(defvar pastebin-db (make-instance 'db-hash-table)
+  "The current pastebin database.")
+
+(defun pastebin-get (id)
+  "Get a pastebin entry from the database."
+  (pastebin-db-get pastebin-db-get id))
+
+(defun pastebin-put (id entry)
+  "Put a new pastebin entry in the database."
+  (pastebin-db-put pastebin-db-get id entry))
+
+;; IDs
 
 (defvar pastebin-id-digits
   "0123456789abcedfghijklmnopqrstuvwxyzABCEDFGHIJKLMNOPQRSTUVWXYZ-.")
 
 (defun pastebin-id-valid-p (id)
-  (not (or (gethash id pastebin-db)
+  "Return T if the given ID is valid and unique."
+  (not (or (pastebin-get id)
            (string-match-p "^[.-]\\|[.-]$\\|\\.-\\|-\\." id))))
 
 (defun* pastebin-make-id (&optional (min-length 4))
-  (loop with base = (length pastebin-id-digits)
-        for length upfrom min-length
-        for digits = (loop repeat length
-                           collect (aref pastebin-id-digits (random base)))
-        for id = (coerce digits 'string)
-        when (pastebin-id-valid-p id) return id))
-
-(defun* pastebin-make-id (&optional (min-length 4))
+  "Generate a new, unique pastebin ID."
   (flet ((make-digit ()
            (aref pastebin-id-digits (random (length pastebin-id-digits)))))
     (loop for length upfrom min-length
           for digits = (loop repeat length collect (make-digit))
           for id = (coerce digits 'string)
           when (pastebin-id-valid-p id) return id)))
+
+;; Servlets
 
 (defun pastebin-get-file (file)
   (with-temp-buffer
