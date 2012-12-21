@@ -1,6 +1,7 @@
 ;;; pastebin.el --- pastebin example with simple-httpd
 
 (require 'cl)
+(require 'json)
 (require 'url-util)
 (require 'simple-httpd)
 (require 'pastebin-db)
@@ -62,8 +63,9 @@
          (entry (pastebin-get id)))
     (if (null entry)
         (httpd-send-header proc "text/plain" 404)
-      (with-httpd-buffer proc (or (db-entry-type entry) "text/plain")
-        (insert (db-entry-content entry))))))
+      (with-httpd-buffer proc "text/json"
+        (insert (json-encode `((content . ,(db-entry-content entry))
+                               (type . ,(db-entry-type entry)))))))))
 
 (defun httpd/pastebin/post (proc path query request)
   "Post a new entry into the database."
