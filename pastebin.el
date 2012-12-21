@@ -14,11 +14,11 @@
 
 (defun pastebin-get (id)
   "Get a pastebin entry from the database."
-  (pastebin-db-get pastebin-db-get id))
+  (pastebin-db-get pastebin-db id))
 
 (defun pastebin-put (id entry)
   "Put a new pastebin entry in the database."
-  (pastebin-db-put pastebin-db-get id entry))
+  (pastebin-db-put pastebin-db id entry))
 
 ;; IDs
 
@@ -41,19 +41,34 @@
 
 ;; Servlets
 
-(defun pastebin-get-file (file)
-  (with-temp-buffer
-    (insert-file-literally (expand-file-name file pastebin-data-root))
-    (buffer-string)))
+(defvar pastebin-static
+  (delete-if (lambda (file) (eql (aref file 0) ?.))
+             (directory-files pastebin-data-root))
+  "Static files served up by the root servlet.")
 
-(defservlet pastebin text/html (path)
+(defun httpd/pastebin (proc path args request)
+  "Serve up various static files from the data root."
+  (if (equal path "/pastebin")
+      (httpd-redirect proc "/pastebin/")
+    (let ((file (file-name-nondirectory path)))
+      (flet ((expand (name) (expand-file-name name pastebin-data-root)))
+        (if (member file pastebin-static)
+            (httpd-send-file proc (expand file) request)
+          (httpd-send-file proc (expand "index.html") request))))))
+
+(defun httpd/pastebin/get (proc path &rest rest)
+  "Serves a raw entry from the database."
   (let* ((id (file-name-nondirectory path))
-         (content (url-insert-entities-in-string (gethash id pastebin-db ""))))
-    (insert (format (pastebin-get-file "paste.html") content))))
+         (entry (pastebin-get id)))
+    (if (null entry)
+        (httpd-send-header proc "text/plain" 404)
+      (with-httpd-buffer proc (or (db-entry-type entry) "text/plain")
+        (insert (db-entry-content entry))))))
 
 (defun httpd/pastebin/post (proc path query request)
+  "Post a new entry into the database."
   (let* ((id (pastebin-make-id))
          (content (cadr (assoc "Content" request)))
          (decode (url-unhex-string (substitute ?  ?+ content) t)))
-    (puthash id (substring decode 2) pastebin-db)
+    (pastebin-put id (make-db-entry :content (substring decode 2)))
     (httpd-redirect proc (format "/pastebin/%s" id))))
