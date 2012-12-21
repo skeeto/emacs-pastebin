@@ -63,8 +63,7 @@
     (if (null entry)
         (httpd-send-header proc "text/plain" 404)
       (with-httpd-buffer proc "text/json"
-        (insert (json-encode `((content . ,(db-entry-content entry))
-                               (type . ,(db-entry-type entry)))))))))
+        (insert (db-entry-to-json entry))))))
 
 (defservlet pastebin/post text/plain (path query request)
   "Adds the paste entry to the database."

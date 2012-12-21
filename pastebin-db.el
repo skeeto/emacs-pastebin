@@ -3,6 +3,11 @@
 (defstruct db-entry
   content type)
 
+(defun db-entry-to-json (entry)
+  "Encode a DB entry into a JSON string."
+  (json-encode `((content . ,(db-entry-content entry))
+                 (type . ,(db-entry-type entry)))))
+
 (defgeneric pastebin-db-get (db id)
   "Get paste entry ID from database DB. Returns NIL if ID doesn't exist.")
 
