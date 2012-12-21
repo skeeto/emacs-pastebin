@@ -3,16 +3,23 @@
   <head>
     <title>Elisp Pastebin</title>
     <link rel="stylesheet" href="pastebin.css"/>
+    <link rel="stylesheet" href="highlight.css"/>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="pastebin.js"></script>
+    <script src="highlight.pack.js"></script>
     <script src="/skewer"></script>
   </head>
   <body>
     <h1>Elisp Pastebin</h1>
-    <div id="paste"></div>
+    <pre id="paste"></pre>
     <div id="entry">
       <form>
-        <p><textarea id="content" name="p" cols="80" rows="30"></textarea></p>
+        <p><textarea id="content" cols="80" rows="30"></textarea></p>
+        <p>
+          <select id="language">
+            <option value="auto">Automatic</option>
+          </select>
+        </p>
         <p><input type="submit" value="Paste"/></p>
       </form>
     </div>

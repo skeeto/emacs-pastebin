@@ -1,7 +1,6 @@
 ;;; pastebin.el --- pastebin example with simple-httpd
 
 (require 'cl)
-(require 'json)
 (require 'simple-httpd)
 (require 'pastebin-db)
 
@@ -67,8 +66,6 @@
 
 (defservlet pastebin/post text/plain (path query request)
   "Adds the paste entry to the database."
-  (let* ((id (pastebin-make-id))
-         (json (json-read-from-string (cadr (assoc "Content" request))))
-         (content (cdr (assoc 'content json))))
-    (pastebin-put id (make-db-entry :content content))
+  (let ((id (pastebin-make-id)))
+    (pastebin-put id (db-entry-from-json (cadr (assoc "Content" request))))
     (insert id)))

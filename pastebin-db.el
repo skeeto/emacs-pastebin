@@ -1,12 +1,19 @@
+(require 'json)
 (require 'eieio)
 
 (defstruct db-entry
-  content type)
+  content language)
 
 (defun db-entry-to-json (entry)
   "Encode a DB entry into a JSON string."
   (json-encode `((content . ,(db-entry-content entry))
-                 (type . ,(db-entry-type entry)))))
+                 (language . ,(db-entry-language entry)))))
+
+(defun db-entry-from-json (string)
+  "Turn a JSON expression into a DB entry."
+  (let ((json (json-read-from-string string)))
+    (make-db-entry :content (cdr (assoc 'content json))
+                   :language (cdr (assoc 'language json)) )))
 
 (defgeneric pastebin-db-get (db id)
   "Get paste entry ID from database DB. Returns NIL if ID doesn't exist.")
