@@ -1,6 +1,14 @@
 body {
     background: lightcyan;
     width: 700px;
+    font-family: sans;
+}
+
+h2 {
+    padding: 0 0 5px 0;
+    margin: 0;
+    font-size: 14pt;
+    font-weight: normal;
 }
 
 #paste {
