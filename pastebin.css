@@ -1,0 +1,36 @@
+#paste, #entry {
+    width: 700px;
+}
+
+#entry textarea {
+    width: 100%;
+    height: 30em;
+    margin-bottom: 15px;
+}
+
+.controls {
+    width: 275px;
+    float: right;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: lightblue;
+}
+
+.control {
+    height: 25px;
+    padding: 5px 0px 0px 0px;
+}
+
+label {
+    float: left;
+}
+
+.input {
+    float: right;
+    width: 125px;
+}
+
+.input select, .input input {
+    width: 100%;
+}
