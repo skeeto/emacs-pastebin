@@ -7,4 +7,14 @@ $(document).ready(function() {
             $('#content').val(entry.content);
         }, 'json');
     }
+
+    $('#entry form').bind('submit', function() {
+        var entry = {
+            content: $('#content').val()
+        };
+        $.post("post", JSON.stringify(entry), function(id) {
+            location = id;
+        }, 'text');
+        return false;
+    });
 });

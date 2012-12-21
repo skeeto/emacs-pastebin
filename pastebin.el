@@ -2,7 +2,6 @@
 
 (require 'cl)
 (require 'json)
-(require 'url-util)
 (require 'simple-httpd)
 (require 'pastebin-db)
 
@@ -67,10 +66,10 @@
         (insert (json-encode `((content . ,(db-entry-content entry))
                                (type . ,(db-entry-type entry)))))))))
 
-(defun httpd/pastebin/post (proc path query request)
-  "Post a new entry into the database."
+(defservlet pastebin/post text/plain (path query request)
+  "Adds the paste entry to the database."
   (let* ((id (pastebin-make-id))
-         (content (cadr (assoc "Content" request)))
-         (decode (url-unhex-string (substitute ?  ?+ content) t)))
-    (pastebin-put id (make-db-entry :content (substring decode 2)))
-    (httpd-redirect proc (format "/pastebin/%s" id))))
+         (json (json-read-from-string (cadr (assoc "Content" request))))
+         (content (cdr (assoc 'content json))))
+    (pastebin-put id (make-db-entry :content content))
+    (insert id)))
