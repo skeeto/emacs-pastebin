@@ -6,4 +6,4 @@ servlets. Supports language syntax highlighting.
 
 Add your Git repository clone to your `load-path`, start the
 web-server in Emacs (`httpd-start`), load `pastebin.el`, and visit
-http://localhost:8080/pastebin/.
+[http://localhost:8080/pastebin/](http://localhost:8080/pastebin/).
