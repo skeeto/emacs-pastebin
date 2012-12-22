@@ -25,7 +25,8 @@ $(document).ready(function() {
     $('#entry form').bind('submit', function() {
         var entry = {
             content: $('#content').val(),
-            language: $('#language').val()
+            language: $('#language').val(),
+            expiration: parseFloat($('#expiration').val())
         };
         $.post("post", JSON.stringify(entry), function(id) {
             location = id;
