@@ -8,7 +8,7 @@
 
 ;; DB setup
 
-(defvar pastebin-db (make-instance 'db-hash-table)
+(defvar pastebin-db (make-db-hash-table)
   "The current pastebin database.")
 
 (defun pastebin-get (id)

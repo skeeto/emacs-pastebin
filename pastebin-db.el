@@ -30,6 +30,10 @@
   ((table :initform (make-hash-table :test 'equal)))
   (:documentation "Database stored in a native hash table."))
 
+(defun make-db-hash-table ()
+  "Create a new empty db-hash-table."
+  (make-instance 'db-hash-table))
+
 (defmethod pastebin-db-get ((db db-hash-table) id)
   (let ((entry (gethash id (slot-value db 'table))))
     (when entry
