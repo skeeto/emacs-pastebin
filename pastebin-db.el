@@ -40,9 +40,6 @@
 (defgeneric pastebin-db-put (db id entry)
   "Put a paste entry into database DB, returning ENTRY.")
 
-(defgeneric pastebin-db-test (db id)
-  "Test for the existance of entry ")
-
 ;; Hash table database
 
 (defclass db-hash-table ()
