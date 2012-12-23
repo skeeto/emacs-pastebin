@@ -19,6 +19,15 @@ article footer, article header {
     font-size: 9pt;
 }
 
+article .date {
+    color: gray;
+    font-style: italic;
+}
+
+article time {
+    font-weight: bold;
+}
+
 article footer {
     display: none;
     margin: 0 0 15px 0;

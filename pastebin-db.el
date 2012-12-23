@@ -7,7 +7,8 @@
   (language :read-only t)
   (expiration :read-only t)
   (title :read-only t)
-  (parent :read-only t))
+  (parent :read-only t)
+  (time :read-only t))
 
 (defun db-entry-to-json (entry)
   "Encode a DB entry into a JSON string."
@@ -15,7 +16,8 @@
                  (language . ,(db-entry-language entry))
                  (expiration . ,(db-entry-expiration entry))
                  (title . ,(db-entry-title entry))
-                 (parent . ,(db-entry-parent entry)))))
+                 (parent . ,(db-entry-parent entry))
+                 (time . ,(db-entry-time entry)))))
 
 (defun db-entry-from-json (string)
   "Turn a JSON expression into a DB entry."
@@ -25,7 +27,8 @@
                      :language (ref language)
                      :expiration (+ (float-time) (ref expiration))
                      :title (ref title)
-                     :parent (ref parent)))))
+                     :parent (ref parent)
+                     :time (float-time)))))
 
 (defun db-entry-alive-p (entry)
   "Return T if the entry has not expired."

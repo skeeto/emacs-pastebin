@@ -13,14 +13,20 @@ pastebin.diff = function(pasteA, pasteB) {
 $(document).ready(function() {
     /* Insert the current paste in the document. */
     pastebin.get(pastebin.ID, function(entry) {
-        var $paste = $('#paste');
-        $paste.show();
+        var $paste = $('#paste').show();
+
+        /* Set up header.  */
         $paste.find('h2').text(entry.title || '');
+        $paste.find('.post-time').text(new Date(entry.expiration * 1000));
+
+        /* Fill in the paste. */
         $paste.find('pre').text(entry.content)
             .addClass(entry.language || "no-highlight")
             .each(function(i, e) {
                 hljs.highlightBlock(e);
             });
+
+        /* Insert parent information. */
         if (entry.parent) {
             $paste.find('footer').show().find('a.parent')
                 .text(entry.parent)
