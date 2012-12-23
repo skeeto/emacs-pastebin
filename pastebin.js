@@ -13,12 +13,13 @@ $(document).ready(function() {
         }, 'json');
     }
 
-    for (var language in hljs.LANGUAGES) {
-        var formal = language.replace(/^./, function(first) {
+    var languages = Object.keys(hljs.LANGUAGES).sort();
+    for (var i in languages) {
+        var formal = languages[i].replace(/^./, function(first) {
             return first.toUpperCase();
         });
         $('#language').append($('<option>' + formal + '</option>').attr({
-            value: language
+            value: languages[i]
         }));
     }
 
