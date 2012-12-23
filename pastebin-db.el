@@ -18,11 +18,18 @@
                      :language (ref language)
                      :expiration (+ (float-time) (ref expiration))))))
 
+(defun db-entry-alive-p (entry)
+  "Return T if the entry has not expired."
+  (< (float-time) (db-entry-expiration entry)))
+
 (defgeneric pastebin-db-get (db id)
   "Get paste entry ID from database DB. Returns NIL if ID doesn't exist.")
 
 (defgeneric pastebin-db-put (db id entry)
   "Put a paste entry into database DB, returning ENTRY.")
+
+(defgeneric pastebin-db-test (db id)
+  "Test for the existance of entry ")
 
 ;; Hash table database
 
@@ -37,7 +44,7 @@
 (defmethod pastebin-db-get ((db db-hash-table) id)
   (let ((entry (gethash id (slot-value db 'table))))
     (when entry
-      (if (< (float-time) (db-entry-expiration entry))
+      (if (db-entry-alive-p entry)
           entry
         (remhash id (slot-value db 'table))))))
 
@@ -63,7 +70,10 @@
     (when (file-exists-p file)
       (with-temp-buffer
         (insert-file-contents-literally file)
-        (read (current-buffer))))))
+        (let ((entry (read (current-buffer))))
+          (if (db-entry-alive-p entry)
+              entry
+            (delete-file file)))))))
 
 (defmethod pastebin-db-put ((db db-flat-file) id entry)
   (let* ((root (slot-value db 'directory))
