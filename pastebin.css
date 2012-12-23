@@ -11,11 +11,14 @@ h2 {
     font-weight: normal;
 }
 
+article {
+    display: none;
+}
+
 #paste {
     padding: 5px;
     border: 1px dotted gray;
     background-color: oldlace;
-    display: none;
 }
 
 #entry textarea {

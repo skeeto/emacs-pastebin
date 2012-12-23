@@ -2,13 +2,15 @@ $(document).ready(function() {
     var id = location.pathname.split('/').slice(-1)[0];
     if (id) {
         $.get('get/' + id, function(entry) {
-            $('#paste').show()
-                .text(entry.content)
+            $('article').show();
+            $('article h2').text(entry.title || '');
+            $('#paste').text(entry.content)
                 .addClass(entry.language || "no-highlight")
                 .each(function(i, e) {
                     hljs.highlightBlock(e);
                 });
             $('#content').val(entry.content);
+            $('#title').val(entry.title || '');
             $('#language').val(entry.language || "auto");
         }, 'json');
     }
@@ -26,6 +28,7 @@ $(document).ready(function() {
     $('#entry form').bind('submit', function() {
         var entry = {
             content: $('#content').val(),
+            title: $('#title').val(),
             language: $('#language').val(),
             expiration: parseFloat($('#expiration').val())
         };

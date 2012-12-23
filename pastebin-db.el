@@ -2,13 +2,14 @@
 (require 'eieio)
 
 (defstruct db-entry
-  content language expiration)
+  content language expiration title)
 
 (defun db-entry-to-json (entry)
   "Encode a DB entry into a JSON string."
   (json-encode `((content . ,(db-entry-content entry))
                  (language . ,(db-entry-language entry))
-                 (expiration . ,(db-entry-expiration entry)))))
+                 (expiration . ,(db-entry-expiration entry))
+                 (title . ,(db-entry-title entry)))))
 
 (defun db-entry-from-json (string)
   "Turn a JSON expression into a DB entry."
@@ -16,7 +17,8 @@
     (macrolet ((ref (slot) `(cdr (assoc (quote ,slot) json))))
       (make-db-entry :content (ref content)
                      :language (ref language)
-                     :expiration (+ (float-time) (ref expiration))))))
+                     :expiration (+ (float-time) (ref expiration))
+                     :title (ref title)))))
 
 (defun db-entry-alive-p (entry)
   "Return T if the entry has not expired."
