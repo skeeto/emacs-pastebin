@@ -1,5 +1,31 @@
 ;;; pastebin.el --- pastebin example with simple-httpd
 
+;; This is free and unencumbered software released into the public domain.
+
+;;; Commentary:
+
+;; This package provides a pastebin web service using the simple-httpd
+;; package. The backend here is kept minimal, basically a simple
+;; database and file server, with the bulk of the work being done by
+;; the client. Three servlets are created,
+
+;; * /pastebin/     -- serves static files from the data root
+;; * /pastebin/get  -- serves a paste in JSON form
+;; * /pastebin/post -- accepts a new paste in JSON form
+
+;; Dynamic insertion of a paste into the page and syntax highlighting
+;; are done after load by JavaScript. Syntax highlighting could have
+;; easily been done by Emacs (htmlize) but I honestly don't trust the
+;; various programming modes to securely handle arbitrary data.
+
+;; Multiple backend databases are supported. See pastebin-db.el. To
+;; change to a new database rebind `pastebin-db' to a new database
+;; object. For example,
+
+;;     (setq pastebin-db (make-db-flat-file "/tmp/pastebin"))
+
+;;; Code:
+
 (require 'cl)
 (require 'simple-httpd)
 (require 'pastebin-db)
@@ -69,3 +95,7 @@
   (let ((id (pastebin-make-id)))
     (pastebin-put id (db-entry-from-json (cadr (assoc "Content" request))))
     (insert id)))
+
+(provide 'pastebin)
+
+;;; pastebin.el ends here

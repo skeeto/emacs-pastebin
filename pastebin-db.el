@@ -1,3 +1,19 @@
+;;; pastebin-db.el --- backend databases for the pastebin package
+
+;; This is free and unencumbered software released into the public domain.
+
+;;; Commentary:
+
+;; This is a pluggable database API with two implementations:
+
+;; * hash-table (no on-disk storage)
+;; * flat-file
+
+;; New implementations only need to create a class that implements the
+;; two generic functions, `pastebin-db-get' and `pastebin-db-put'.
+
+;;; Code:
+
 (require 'json)
 (require 'eieio)
 
@@ -94,3 +110,5 @@
       (prin1 entry (current-buffer)))))
 
 (provide 'pastebin-db)
+
+;;; pastebin-db.el ends here
