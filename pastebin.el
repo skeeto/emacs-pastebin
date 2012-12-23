@@ -22,12 +22,12 @@
 ;; IDs
 
 (defvar pastebin-id-digits
-  "0123456789abcedfghijklmnopqrstuvwxyzABCEDFGHIJKLMNOPQRSTUVWXYZ-.")
+  "0123456789abcedfghijklmnopqrstuvwxyzABCEDFGHIJKLMNOPQRSTUVWXYZ-_")
 
 (defun pastebin-id-valid-p (id)
   "Return T if the given ID is valid and unique."
   (not (or (pastebin-get id)
-           (string-match-p "^[.-]\\|[.-]$\\|\\.-\\|-\\." id))))
+           (string-match-p "^[_-]\\|[_-]$\\|_-\\|-_" id))))
 
 (defun* pastebin-make-id (&optional (min-length 4))
   "Generate a new, unique pastebin ID."
