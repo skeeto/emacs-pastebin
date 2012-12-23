@@ -2,24 +2,41 @@ var pastebin = pastebin || {};
 
 pastebin.ID = location.pathname.split('/').slice(-1)[0] || null;
 
-pastebin.getPaste = function(id, callback) {
+pastebin.get = function(id, callback) {
     if (id) $.get('get/' + id, callback, 'json');
+};
+
+pastebin.diff = function(pasteA, pasteB) {
+    return JsDiff.createPatch(pasteA.parent, pasteA.content, pasteB.content);
 };
 
 $(document).ready(function() {
     /* Insert the current paste in the document. */
-    pastebin.getPaste(pastebin.ID, function(entry) {
-        $('article').show();
-        $('article h2').text(entry.title || '');
-        $('#paste').text(entry.content)
+    pastebin.get(pastebin.ID, function(entry) {
+        var $paste = $('#paste');
+        $paste.show();
+        $paste.find('h2').text(entry.title || '');
+        $paste.find('pre').text(entry.content)
             .addClass(entry.language || "no-highlight")
             .each(function(i, e) {
                 hljs.highlightBlock(e);
             });
         if (entry.parent) {
-            $('article nav.derived').show().find('a')
+            $paste.find('footer').show().find('a.parent')
                 .text(entry.parent)
                 .attr('href', entry.parent);
+            $paste.find('footer a.diff').bind('click', function() {
+                pastebin.get(entry.parent, function(parent) {
+                    var diff = pastebin.diff(entry, parent);
+                    var pre = $('<pre class="diff"/>').text(diff)
+                            .each(function(i, e) {
+                                hljs.highlightBlock(e);
+                            });
+                    this.append(pre).children();
+                }.bind($(this).closest('article')));
+                $(this).parent().remove();
+                return false;
+            });
         }
 
         /* Fill in the editor, too. */
@@ -40,7 +57,7 @@ $(document).ready(function() {
     }
 
     /* Submission handling. */
-    $('#entry form').bind('submit', function() {
+    $('#edit form').bind('submit', function() {
         var entry = {
             content: $('#content').val(),
             title: $('#title').val(),
