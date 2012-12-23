@@ -17,7 +17,7 @@ $(document).ready(function() {
 
         /* Set up header.  */
         $paste.find('h2').text(entry.title);
-        $paste.find('.post-time').text(new Date(entry.expiration * 1000));
+        $paste.find('.post-time').text(new Date(entry.time * 1000));
 
         /* Fill in the paste. */
         $paste.find('pre').text(entry.content)
