@@ -2,7 +2,11 @@
 (require 'eieio)
 
 (defstruct db-entry
-  content language expiration title)
+  "Represents a single, immutable database entry."
+  (content :read-only t)
+  (language :read-only t)
+  (expiration :read-only t)
+  (title :read-only t))
 
 (defun db-entry-to-json (entry)
   "Encode a DB entry into a JSON string."
