@@ -15,6 +15,15 @@ article {
     display: none;
 }
 
+article nav {
+    font-size: 9pt;
+}
+
+article nav.derived {
+    display: none;
+    margin: 0 0 15px 0;
+}
+
 #paste {
     padding: 5px;
     border: 1px dotted gray;
