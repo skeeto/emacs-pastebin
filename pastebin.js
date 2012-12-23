@@ -16,7 +16,7 @@ $(document).ready(function() {
         var $paste = $('#paste').show();
 
         /* Set up header.  */
-        $paste.find('h2').text(entry.title || '');
+        $paste.find('h2').text(entry.title);
         $paste.find('.post-time').text(new Date(entry.expiration * 1000));
 
         /* Fill in the paste. */
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
         /* Fill in the editor, too. */
         $('#content').val(entry.content);
-        $('#title').val(entry.title || '');
+        $('#title').val(entry.title);
         $('#language').val(entry.language || "auto");
     });
 
@@ -66,7 +66,7 @@ $(document).ready(function() {
     $('#edit form').bind('submit', function() {
         var entry = {
             content: $('#content').val(),
-            title: $('#title').val(),
+            title: $('#title').val() || 'Untitled',
             language: $('#language').val(),
             expiration: parseFloat($('#expiration').val()),
             parent: pastebin.ID
