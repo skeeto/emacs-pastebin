@@ -61,12 +61,14 @@
   "Make a new flat-file database using ROOT-DIRECTORY as storage."
   (make-instance 'db-flat-file :directory root-directory))
 
-(defun db-flat-file--clean (id)
-  (replace-regexp-in-string "[/~]\\|\\.\\." "" id))
+(defun db-flat-file--resolve (id)
+  "Safely convert an ID into a path."
+  (let ((clean (replace-regexp-in-string "[/~]\\|\\.\\." "" id)))
+    (concat (substring clean 0 2) "/" clean)))
 
 (defmethod pastebin-db-get ((db db-flat-file) id)
   (let* ((root (slot-value db 'directory))
-         (file (expand-file-name (db-flat-file--clean id) root)))
+         (file (expand-file-name (db-flat-file--resolve id) root)))
     (when (file-exists-p file)
       (with-temp-buffer
         (insert-file-contents-literally file)
@@ -77,7 +79,8 @@
 
 (defmethod pastebin-db-put ((db db-flat-file) id entry)
   (let* ((root (slot-value db 'directory))
-         (file (expand-file-name (db-flat-file--clean id) root)))
+         (file (expand-file-name (db-flat-file--resolve id) root)))
+    (make-directory (file-name-directory file) t)
     (with-temp-file file
       (prin1 entry (current-buffer)))))
 
