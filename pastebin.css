@@ -26,8 +26,9 @@ article .date {
     font-style: italic;
 }
 
-article time {
+article abbr {
     font-weight: bold;
+    border-bottom: 1px dotted;
 }
 
 article footer {

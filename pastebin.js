@@ -17,7 +17,13 @@ $(document).ready(function() {
 
         /* Set up header.  */
         $paste.find('h2').text(entry.title);
-        $paste.find('.post-time').text(new Date(entry.time * 1000));
+        $.timeago.settings.allowFuture = true;
+        $paste.find('.post-time')
+            .attr('title', new Date(entry.time * 1000).toISOString())
+            .timeago();
+        $paste.find('.expire-time')
+            .attr('title', new Date(entry.expiration * 1000).toISOString())
+            .timeago();
 
         /* Fill in the paste. */
         $paste.find('pre').text(entry.content)
