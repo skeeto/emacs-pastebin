@@ -2,6 +2,11 @@
 
 ;; This is free and unencumbered software released into the public domain.
 
+;; Author: Christopher Wellons <mosquitopsu@gmail.com>
+;; URL: https://github.com/skeeto/emacs-pastebin
+;; Version: 1.0
+;; Package-Requires: ((simple-httpd "1.4.0"))
+
 ;;; Commentary:
 
 ;; This package provides a pastebin web service using the simple-httpd
