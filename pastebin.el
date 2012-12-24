@@ -86,12 +86,18 @@
             (httpd-send-file t (expand file) request)
           (httpd-send-file t (expand "index.html") request))))))
 
-(defservlet pastebin/get text/json (path)
+(defservlet pastebin/get text/json (path args)
   "Serves a raw entry from the database."
   (let ((entry (pastebin-get (file-name-nondirectory path))))
-    (if (null entry)
-        (httpd-send-header t "text/plain" 404)
-      (insert (db-entry-to-json entry)))))
+    (cond
+     ((null entry) (httpd-send-header t "text/plain" 404))
+     ((assoc "raw" args)
+      (insert (db-entry-content entry))
+      (httpd-send-header t "text/plain" 200))
+     ((assoc "download" args)
+      (insert (db-entry-content entry))
+      (httpd-send-header t "application/download" 200))
+     (t (insert (db-entry-to-json entry))))))
 
 (defservlet pastebin/post text/plain (path query request)
   "Adds the paste entry to the database."

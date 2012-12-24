@@ -24,6 +24,9 @@ $(document).ready(function() {
         $paste.find('.expire-time')
             .attr('title', new Date(entry.expiration * 1000).toISOString())
             .timeago();
+        $paste.find('a.raw').attr('href', 'get/' + pastebin.ID + '?raw');
+        $paste.find('a.download')
+            .attr('href', 'get/' + pastebin.ID + '?download');
 
         /* Fill in the paste. */
         $paste.find('pre').text(entry.content)

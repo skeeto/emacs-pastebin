@@ -24,11 +24,17 @@ article footer, article header {
 article .date {
     color: gray;
     font-style: italic;
+    float: left;
 }
 
 article abbr {
     font-weight: bold;
     border-bottom: 1px dotted;
+}
+
+article nav {
+    margin-top: 5px;
+    float: right;
 }
 
 article footer {
@@ -40,6 +46,7 @@ article pre {
     padding: 5px;
     border: 1px dotted gray;
     background-color: oldlace;
+    margin-top: 25px;
 }
 
 /* Editing area */
