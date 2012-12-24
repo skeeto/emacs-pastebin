@@ -71,20 +71,17 @@
 
 ;; Servlets
 
-(defvar pastebin-static
-  (delete-if (lambda (file) (eql (aref file 0) ?.))
-             (directory-files pastebin-data-root))
-  "Static files served up by the root servlet.")
-
-(defservlet pastebin nil (path args request)
+(defun httpd/pastebin (proc path args request)
   "Serve up various static files from the data root."
   (if (equal path "/pastebin")
       (httpd-redirect t "/pastebin/")
-    (let ((file (file-name-nondirectory path)))
-      (flet ((expand (name) (expand-file-name name pastebin-data-root)))
-        (if (member file pastebin-static)
-            (httpd-send-file t (expand file) request)
-          (httpd-send-file t (expand "index.html") request))))))
+    (let* ((file (substring path (length "/pastebin/")))
+           (httpd-root pastebin-data-root)
+           (path (httpd-gen-path file))
+           (default (expand-file-name "index.html" pastebin-data-root)))
+      (if (file-exists-p path)
+          (httpd-send-file proc path request)
+        (httpd-send-file proc default request)))))
 
 (defservlet pastebin/get text/json (path args)
   "Serves a raw entry from the database."
