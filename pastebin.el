@@ -76,24 +76,22 @@
              (directory-files pastebin-data-root))
   "Static files served up by the root servlet.")
 
-(defun httpd/pastebin (proc path args request)
+(defservlet pastebin nil (path args request)
   "Serve up various static files from the data root."
   (if (equal path "/pastebin")
-      (httpd-redirect proc "/pastebin/")
+      (httpd-redirect t "/pastebin/")
     (let ((file (file-name-nondirectory path)))
       (flet ((expand (name) (expand-file-name name pastebin-data-root)))
         (if (member file pastebin-static)
-            (httpd-send-file proc (expand file) request)
-          (httpd-send-file proc (expand "index.html") request))))))
+            (httpd-send-file t (expand file) request)
+          (httpd-send-file t (expand "index.html") request))))))
 
-(defun httpd/pastebin/get (proc path &rest rest)
+(defservlet pastebin/get text/json (path)
   "Serves a raw entry from the database."
-  (let* ((id (file-name-nondirectory path))
-         (entry (pastebin-get id)))
+  (let ((entry (pastebin-get (file-name-nondirectory path))))
     (if (null entry)
-        (httpd-send-header proc "text/plain" 404)
-      (with-httpd-buffer proc "text/json"
-        (insert (db-entry-to-json entry))))))
+        (httpd-send-header t "text/plain" 404)
+      (insert (db-entry-to-json entry)))))
 
 (defservlet pastebin/post text/plain (path query request)
   "Adds the paste entry to the database."
