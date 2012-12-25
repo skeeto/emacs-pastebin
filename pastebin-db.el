@@ -110,6 +110,83 @@ passed to this method should already be sanitized.")
     (with-temp-file file
       (prin1 entry (current-buffer)))))
 
+;; SQLite (this is messy, but it works!)
+
+(defvar sqlite3-program-name "sqlite3"
+  "The location of the sqlite3 command line program.")
+
+(defclass db-sqlite ()
+  ((file :initarg :file))
+  (:documentation "Requires the sqlite3 command line program."))
+
+(defun db-sqlite--parse-csv ()
+  "Split the CSV line in the buffer into a list."
+  (flet ((unquote (string)
+           (cond
+            ((string= string "\"\"") "")
+            ((eql (aref string 0) ?\")
+             (substring (replace-regexp-in-string "\"\"" "\"" string) 1 -1))
+            (string))))
+    (loop with re = "\"\\(?:[^\"]\\|\"\"\\)*\"\\|[^,]+\\|\"\""
+          while (re-search-forward re nil t)
+          collect (unquote (match-string 0)))))
+
+(defun db-sqlite--quote (content)
+  "Quote CONTENT for insertion."
+  (format "'%s'" (replace-regexp-in-string "'" "''" content)))
+
+(defun sqlite-eval (db &rest statement)
+  "Evaluate a STATEMENT in DB and return the result as a list."
+  (declare (indent defun))
+  (let ((file (slot-value db 'file)))
+    (with-temp-buffer
+      (dolist (part statement)
+        (if (null part)
+            (insert "'' ")
+          (insert part " ")))
+      (insert ";")
+      (call-process-region (point-min) (point-max) sqlite3-program-name
+                           t t nil "-csv" file)
+      (when (> (buffer-size) 0)
+        (delete-char -1)
+        (goto-char (point-min))
+        (db-sqlite--parse-csv)))))
+
+(defun make-db-sqlite (db-file)
+  "Make a new database connection to DB-FILE."
+  (let ((db (make-instance 'db-sqlite :file (expand-file-name db-file))))
+    (prog1 db
+      (sqlite-eval db
+        "create table if not exists pastebin ("
+        "id text," "content blob," "language text," "expiration real,"
+        "title blob," "parent text," "time real,"
+        "PRIMARY KEY (id))"))))
+
+(defmethod pastebin-db-get ((db db-sqlite) id)
+  (let ((list (sqlite-eval db
+                "select * from pastebin where id = " (format "'%s'" id))))
+    (when list
+      (destructuring-bind (id content language expiration title parent time)
+          list
+        (make-db-entry :content content :language language
+                       :expiration (string-to-number expiration)
+                       :title title
+                       :parent (if (string= parent "") nil parent)
+                       :time (string-to-number time))))))
+
+(defmethod pastebin-db-put ((db db-sqlite) id entry)
+  (setq a entry)
+  (prog1 entry
+    (sqlite-eval db
+      "insert into pastebin values ("
+      (db-sqlite--quote id) ","
+      (db-sqlite--quote (db-entry-content entry)) ","
+      (db-sqlite--quote (db-entry-language entry)) ","
+      (number-to-string (db-entry-expiration entry)) ","
+      (db-sqlite--quote (db-entry-title entry)) ","
+      (db-sqlite--quote (or (db-entry-parent entry) "")) ","
+      (number-to-string (db-entry-time entry)) ")")))
+
 (provide 'pastebin-db)
 
 ;;; pastebin-db.el ends here
