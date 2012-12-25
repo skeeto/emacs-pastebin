@@ -44,16 +44,20 @@
 
 (defun pastebin-get (id)
   "Get a pastebin entry from the database."
-  (pastebin-db-get pastebin-db id))
+  (pastebin-db-get pastebin-db (pastebin-sanitize-id id)))
 
 (defun pastebin-put (id entry)
   "Put a new pastebin entry in the database."
-  (pastebin-db-put pastebin-db id entry))
+  (pastebin-db-put pastebin-db (pastebin-sanitize-id id) entry))
 
 ;; IDs
 
 (defvar pastebin-id-digits
   "0123456789abcedfghijklmnopqrstuvwxyzABCEDFGHIJKLMNOPQRSTUVWXYZ-_")
+
+(defun pastebin-sanitize-id (id)
+  "Remove invalid characters from ID."
+  (replace-regexp-in-string (format "[^%s]+" pastebin-id-digits) "" id))
 
 (defun pastebin-id-valid-p (id)
   "Return T if the given ID is valid and unique."

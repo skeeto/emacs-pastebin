@@ -51,10 +51,12 @@
   (< (float-time) (db-entry-expiration entry)))
 
 (defgeneric pastebin-db-get (db id)
-  "Get paste entry ID from database DB. Returns NIL if ID doesn't exist.")
+  "Get paste entry ID from database DB. Returns NIL if ID doesn't
+exist. The ID passed to this method should already be sanitized.")
 
 (defgeneric pastebin-db-put (db id entry)
-  "Put a paste entry into database DB, returning ENTRY.")
+  "Put a paste entry into database DB, returning ENTRY. The ID
+passed to this method should already be sanitized.")
 
 ;; Hash table database
 
@@ -87,9 +89,8 @@
   (make-instance 'db-flat-file :directory root-directory))
 
 (defun db-flat-file--resolve (id)
-  "Safely convert an ID into a path."
-  (let ((clean (replace-regexp-in-string "[/~]\\|\\.\\." "" id)))
-    (concat (substring clean 0 2) "/" clean)))
+  "Convert an ID into a path."
+  (concat (substring id 0 2) "/" id))
 
 (defmethod pastebin-db-get ((db db-flat-file) id)
   (let* ((root (slot-value db 'directory))
