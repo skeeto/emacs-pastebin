@@ -4,10 +4,11 @@
 
 ;;; Commentary:
 
-;; This is a pluggable database API with two implementations:
+;; This is a pluggable database API with three implementations:
 
 ;; * hash-table (no on-disk storage)
 ;; * flat-file
+;; * sqlite (experimental, quirky)
 
 ;; New implementations only need to create a class that implements the
 ;; two generic functions, `pastebin-db-get' and `pastebin-db-put'.
@@ -119,7 +120,8 @@ passed to this method should already be sanitized.")
 
 (defclass db-sqlite ()
   ((file :initarg :file))
-  (:documentation "Requires the sqlite3 command line program."))
+  (:documentation "Requires the sqlite3 command line program. This database
+doesn't work for large pastes!"))
 
 (defun db-sqlite--parse-csv ()
   "Split the CSV line in the buffer into a list."
