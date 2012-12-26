@@ -21,10 +21,10 @@
   "Represents a single, immutable database entry."
   (content "" :read-only t)
   (language "" :read-only t)
-  (expiration 0 :read-only t)
+  (expiration 0.0 :read-only t)
   (title "" :read-only t)
   (parent nil :read-only t)
-  (time 0 :read-only t))
+  (time 0.0 :read-only t))
 
 (defun db-entry-to-json (entry)
   "Encode a DB entry into a JSON string."
