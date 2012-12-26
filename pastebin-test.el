@@ -8,8 +8,9 @@
 
 (defun pastebin-test-exercise-db (db)
   "Attempt to store and retrieve tricky values to and from a database."
-  (macrolet ((entry (content) (make-db-entry :content content
-                                             :expiration (+ (float-time) 60))))
+  (macrolet ((entry (content)
+               (make-db-entry :content content
+                              :expiration (ffloor (+ (float-time) 60)))))
     (let ((data `(("foo" ,(entry "bar"))
                   ("foO" ,(entry "naïveté"))
                   ("fo0" ,(entry "a\n\"b\"\n'c'\n")))))
