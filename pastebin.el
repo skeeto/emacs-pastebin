@@ -78,7 +78,7 @@
 (defun httpd/pastebin (proc path args request)
   "Serve up various static files from the data root."
   (if (equal path "/pastebin")
-      (httpd-redirect t "/pastebin/")
+      (httpd-redirect proc "/pastebin/")
     (let* ((file (substring path (length "/pastebin/")))
            (httpd-root pastebin-data-root)
            (path (httpd-gen-path file))
