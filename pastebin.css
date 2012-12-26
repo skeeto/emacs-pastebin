@@ -47,6 +47,7 @@ article pre {
     border: 1px dotted gray;
     background-color: oldlace;
     margin-top: 25px;
+    overflow: auto;
 }
 
 /* Editing area */
