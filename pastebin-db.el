@@ -97,6 +97,7 @@ passed to this method should already be sanitized.")
          (file (expand-file-name (db-flat-file--resolve id) root)))
     (when (file-exists-p file)
       (with-temp-buffer
+        (set-buffer-multibyte nil)
         (insert-file-contents-literally file)
         (let ((entry (read (current-buffer))))
           (if (db-entry-alive-p entry)
@@ -108,6 +109,7 @@ passed to this method should already be sanitized.")
          (file (expand-file-name (db-flat-file--resolve id) root)))
     (make-directory (file-name-directory file) t)
     (with-temp-file file
+      (set-buffer-multibyte nil)
       (prin1 entry (current-buffer)))))
 
 ;; SQLite (this is messy, but it works!)
