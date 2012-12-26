@@ -94,7 +94,7 @@
      ((null entry) (httpd-send-header t "text/plain" 404))
      ((assoc "raw" args)
       (insert (db-entry-content entry))
-      (httpd-send-header t "text/plain" 200))
+      (httpd-send-header t "text/plain;charset=utf-8" 200))
      ((assoc "download" args)
       (insert (db-entry-content entry))
       (httpd-send-header t "application/download" 200))
