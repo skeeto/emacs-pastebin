@@ -3,7 +3,9 @@
 This is a demo of an Emacs pastebin server using
 [simple-httpd](https://github.com/skeeto/emacs-http-server)
 servlets. Supports language syntax highlighting, expiration, diffs,
-and two different backend databases.
+and 2.5 different backend databases.
+
+[![](http://i.imgur.com/sh8Q8.png)](http://i.imgur.com/MWpvT.png)
 
 ## Quick Start
 
