@@ -37,4 +37,10 @@
         (pastebin-test-exercise-db (make-db-sqlite db-file))
       (delete-file db-file))))
 
+(ert-deftest pastebin-test-json ()
+  "Test the JSON translation functions."
+  (flet ((float-time () 0.0))
+    (let ((entry (make-db-entry :content "\"naïveté\n\"" :expiration 0.0)))
+      (should (equal (db-entry-from-json (db-entry-to-json entry)) entry)))))
+
 ;;; pastebin-test.el ends here
