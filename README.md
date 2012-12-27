@@ -23,3 +23,8 @@ it. Requires Emacs version >= 24.
 Add your Git repository clone to your `load-path`, start the
 web-server in Emacs (`httpd-start`), load `pastebin.el`, and visit
 [http://localhost:8080/pastebin/](http://localhost:8080/pastebin/).
+
+## Inspiration
+
+ * http://www.terminally-incoherent.com/blog/2012/12/17/php-like-a-pro-part-1/
+ * https://github.com/maciakl/SillyPastebin
