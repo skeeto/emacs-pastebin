@@ -32,10 +32,11 @@
 
 (ert-deftest pastebin-db-sqlite ()
   "Test the SQLite database."
-  (let ((db-file (make-temp-file "pastebin-")))
-    (unwind-protect
-        (pastebin-test-exercise-db (make-db-sqlite db-file))
-      (delete-file db-file))))
+  (when (file-exists-p sqlite3-program-name)
+    (let ((db-file (make-temp-file "pastebin-")))
+      (unwind-protect
+          (pastebin-test-exercise-db (make-db-sqlite db-file))
+        (delete-file db-file)))))
 
 (ert-deftest pastebin-test-json ()
   "Test the JSON translation functions."
