@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'url-util)
 (require 'simple-httpd)
 (require 'pastebin-db)
 
@@ -97,7 +98,10 @@
       (httpd-send-header t "text/plain;charset=utf-8" 200))
      ((assoc "download" args)
       (insert (db-entry-content entry))
-      (httpd-send-header t "application/download" 200))
+      (let* ((filename (url-hexify-string (db-entry-title entry)))
+             (disposition (format "attachment; filename*=UTF-8''%s" filename)))
+        (httpd-send-header t "application/octet-stream" 200
+                           :Content-Disposition disposition)))
      (t (insert (db-entry-to-json entry))))))
 
 (defservlet pastebin/post text/plain (path query request)
