@@ -179,7 +179,6 @@ doesn't work for large pastes!"))
                        :time (string-to-number time))))))
 
 (defmethod pastebin-db-put ((db db-sqlite) id entry)
-  (setq a entry)
   (prog1 entry
     (sqlite-eval db
       "insert into pastebin values ("
