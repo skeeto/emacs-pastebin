@@ -15,6 +15,7 @@
 
 ;;; Code:
 
+(require 'cl)
 (require 'json)
 (require 'eieio)
 
